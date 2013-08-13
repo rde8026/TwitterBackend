@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "3.3.0",
     "jade": "*",
-    "sequelize-sqlite" : "*"
+    "sequelize-sqlite" : "*",
+    "node-gcm" : "*"
   }
 }

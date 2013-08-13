@@ -4,10 +4,11 @@
  */
 
 var express = require('express')
-  , registration = require('./routes/register')
-     , db = require('./db/database')
-  , http = require('http')
-  , path = require('path');
+    , registration = require('./routes/register')
+    , status = require('./routes/status')
+    , db = require('./db/database')
+    , http = require('http')
+    , path = require('path');
 
 var app = express();
 
@@ -27,6 +28,7 @@ if ('development' == app.get('env')) {
 }
 
 app.post('/register/device', registration.registerDevice);
+app.post('/status/update', status.update);
 
 db.init(function(bool) {
      if (bool) {

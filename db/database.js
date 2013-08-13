@@ -23,6 +23,7 @@ exports.init = function(cb) {
           devices = sequelize.define('devices', {
                id : { type : Sequelize.INTEGER, autoIncrement : true, primaryKey : true, allowNull : false }
                , deviceId : { type : Sequelize.STRING, allowNull : false }
+              , registrationId : { type : Sequelize.STRING, allowNull : false }
           });
 
           users.hasMany(devices, {onDelete : 'cascade'});
@@ -56,9 +57,9 @@ exports.findOrCreateUser = function(userId, callback) {
      }
 };
 
-exports.addDeviceToUser = function(user, deviceId, callback) {
+exports.addDeviceToUser = function(user, deviceId, registrationId, callback) {
      try {
-          devices.build({deviceId : deviceId}).save()
+          devices.build({deviceId : deviceId, registrationId : registrationId}).save()
                .complete(function(err, dev) {
                     if (err) {
                          callback(err, null);
@@ -76,6 +77,24 @@ exports.addDeviceToUser = function(user, deviceId, callback) {
           console.log(err);
           callback(err, null);
      }
+};
+
+exports.userDevices = function(twitterId, callback) {
+    try {
+        users.find({
+            where : {twitterId : twitterId}
+            , include : [devices]
+        }).complete(function(err, u) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, u.devices);
+                }
+            });
+    } catch (err) {
+        console.error(err);
+        callback(err, null);
+    }
 };
 
 function loadUserResponse(user, callback) {
