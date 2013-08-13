@@ -6,7 +6,7 @@
 
 var Sequelize = require('sequelize-sqlite').sequelize
      , sqlite    = require('sequelize-sqlite').sqlite
-     , devices, users;
+     , devices, users, messages;
 
 var sequelize = new Sequelize('', '', '', {
      dialect: 'sqlite',
@@ -26,7 +26,13 @@ exports.init = function(cb) {
               , registrationId : { type : Sequelize.STRING, allowNull : false }
           });
 
+          messages = sequelize.define('messages', {
+              id : { type : Sequelize.INTEGER, autoIncrement : true, primaryKey : true, allowNull : false }
+              , messageId : { type : Sequelize.STRING, allowNull : false }
+          });
+
           users.hasMany(devices, {onDelete : 'cascade'});
+          users.hasOne(messages, {onDelete : 'cascade'});
 
           sequelize.sync()
                .success(function() {
@@ -91,6 +97,45 @@ exports.userDevices = function(twitterId, callback) {
                     callback(null, u.devices);
                 }
             });
+    } catch (err) {
+        console.error(err);
+        callback(err, null);
+    }
+};
+
+exports.updateUserMessageId = function(messageId, twitterId, callback) {
+    try {
+        users.find({
+            where : {twitterId : twitterId}
+            , include : [messages]
+        }).complete(function(err, user) {
+            if (err) {
+                callback(err, null);
+            } else {
+                if (user.message) {
+                    var m = user.message;
+                    m.messageId = messageId;
+                    m.save().complete(function(err, updated) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, true);
+                        }
+                    });
+                } else {
+                    messages.build({messageId : messageId}).save()
+                        .complete(function(err, created) {
+                            user.setMessage(created).complete(function(err, msg) {
+                                if (err) {
+                                    callback(err, null);
+                                } else {
+                                    callback(null, true);
+                                }
+                            });
+                        });
+                }
+            }
+        });
     } catch (err) {
         console.error(err);
         callback(err, null);
