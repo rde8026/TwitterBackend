@@ -33,6 +33,7 @@ exports.init = function(cb) {
 
           users.hasMany(devices, {onDelete : 'cascade'});
           users.hasOne(messages, {onDelete : 'cascade'});
+          devices.belongsTo(users);
 
           sequelize.sync()
                .success(function() {
@@ -65,20 +66,44 @@ exports.findOrCreateUser = function(userId, callback) {
 
 exports.addDeviceToUser = function(user, deviceId, registrationId, callback) {
      try {
-          devices.build({deviceId : deviceId, registrationId : registrationId}).save()
-               .complete(function(err, dev) {
-                    if (err) {
-                         callback(err, null);
-                    } else {
-                         user.addDevice(dev).complete(function(err, created) {
-                              if (err) {
-                                   callback(err, null);
-                              } else {
-                                   loadUserResponse(user, callback);
-                              }
+
+         devices.find({
+             where : { deviceId : deviceId }
+         }).complete(function(err, found) {
+                 if (err) {
+                     callback(err, null);
+                 } else {
+                     if (found) {
+                         found.registrationId = registrationId;
+                         found.save().complete(function(err, updated) {
+                             if (err) {
+                                 callback(err, null);
+                             } else {
+                                 //TODO: Get User and call loadUserResponse(user, callback);
+                                 loadUserResponse(updated.userId, callback);
+                             }
                          });
-                    }
-               });
+                     } else {
+
+                         devices.build({deviceId : deviceId, registrationId : registrationId}).save()
+                             .complete(function(err, dev) {
+                                 if (err) {
+                                     callback(err, null);
+                                 } else {
+                                     user.addDevice(dev).complete(function(err, created) {
+                                         if (err) {
+                                             callback(err, null);
+                                         } else {
+                                             loadUserResponse(user.id, callback);
+                                         }
+                                     });
+                                 }
+                             });
+
+                     }
+                 }
+             });
+
      } catch (err) {
           console.log(err);
           callback(err, null);
@@ -142,9 +167,9 @@ exports.updateUserMessageId = function(messageId, twitterId, callback) {
     }
 };
 
-function loadUserResponse(user, callback) {
+function loadUserResponse(id, callback) {
      users.find({
-               where : {id : user.id}
+               where : {id : id}
                , include : [ devices ]
      }).complete(function(err, u) {
           if (err) {
