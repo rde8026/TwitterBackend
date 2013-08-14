@@ -8,11 +8,6 @@ var db = require('../db/database');
 
 exports.registerDevice = function(req, res) {
 
-     /*console.log('***** Registering Device *******');
-     console.log(req.body.deviceId);
-     console.log(req.body.twitterId);*/
-    console.log(req.body.registrationId);
-
      db.findOrCreateUser(req.body.twitterId, function(err, user) {
           if (err) {
                res.send("Error: " + err);

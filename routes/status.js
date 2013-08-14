@@ -8,7 +8,7 @@
 var db = require('../db/database')
     , gcm = require('node-gcm');
 
-var projectId = "379401999507";
+var projectId = "AIzaSyCM2kPiDquMesTSn4gSUb4qDH1j1yM6IpI";
 
 exports.update = function(req, res) {
     try {
@@ -31,7 +31,7 @@ exports.update = function(req, res) {
                         devices.forEach(function(val) {
                             if (deviceId != val.deviceId) {
                                 console.log("Sending update message to device: " + val.deviceId + " last message read was " + messageId);
-                                registrationIds.push(val.deviceId);
+                                registrationIds.push(val.registrationId);
                             }
                         });
 
@@ -41,7 +41,7 @@ exports.update = function(req, res) {
                                 , delayWhileIde : true
                                 , timeToLive : 3
                                 , data : {
-                                    key1 : messageId
+                                    messageId : messageId
                                 }
                             });
                             var sender = new gcm.Sender(projectId);
