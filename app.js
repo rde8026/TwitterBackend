@@ -29,6 +29,7 @@ if ('development' == app.get('env')) {
 
 app.post('/register/device', registration.registerDevice);
 app.post('/status/update', status.update);
+app.get('/status/ping', status.ping);
 
 db.init(function(bool) {
      if (bool) {
