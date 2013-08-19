@@ -112,7 +112,7 @@ exports.updateUserMessageId = function(messageId, twitterId, callback) {
             if (err) {
                 callback(err, null);
             } else {
-                if (user.message) {
+                if (user && user.message) {
                     var m = user.message;
                     m.messageId = messageId;
                     m.save().complete(function(err, updated) {
