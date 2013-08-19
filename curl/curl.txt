@@ -9,4 +9,19 @@ curl -i -v \
 
 curl -i -v \
 -H 'Content-Type: application/json' \
--X POST -d '{"twitterId" : "1234", "deviceId" : "123456", "messageId" : "1001"}' 'http://localhost:3000/status/update'
+-X POST -d '{"twitterId" : "43778839", "deviceId" : "x", "messageId" : "367750619953496064"}' 'http://localhost:3000/status/update'
+
+
+
+##### Register Nexus 4 Device #######
+
+curl -i -v \
+-H 'Content-Type: application/json' \
+-X POST -d '{"deviceId" : "dc580920411ead23", "twitterId" : "43778839", "registrationId" : "APA91bEV4umrc3RLO-Y4ijWfa1CghaaHmFsGZDDUsth0hHoOGcZ3WBi_D6QWoNusSjF4tCGeIEXFu77JODUtrfb2LDoU-9URzZxS9dRUA2IforEWoa7SsRxPEDr2NeN7jQc2g7wUbl6JuTO7BbfjkiICO5fXi65SmA"}' 'http://localhost:3000/register/device'
+
+
+##### Register Nexus 7 Device #######
+
+curl -i -v \
+-H 'Content-Type: application/json' \
+-X POST -d '{"deviceId" : "a3f5df48f53a638d", "twitterId" : "43778839", "registrationId" : "APA91bFWUeshAkBKue0AsSpZJRazr0l9v1ORBHnjoWErVqlnZLu1NR4Y0WQN2rNmRCjw9uJMdXGHaUhnhloagZd_-u8Bbpdi1vjalG5Ot2MfR_IrmzrOWb1G944Zo-0WgMaVZGYDvXY3rjnXKu4F-7iVIcuncjFwdA"}' 'http://localhost:3000/register/device'
