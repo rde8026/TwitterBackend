@@ -27,9 +27,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.post('/register/device', registration.registerDevice);
-app.post('/status/update', status.update);
-app.get('/status/ping', status.ping);
+app.post('/api/register/device', registration.registerDevice);
+app.post('/api/status/update', status.update);
+app.get('/api/status/ping', status.ping);
 
 db.init(function(bool) {
      if (bool) {
